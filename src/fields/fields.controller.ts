@@ -1,34 +1,41 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { FieldsService } from './fields.service';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpException,
+  HttpStatus,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateFieldDto } from './dto/create-field.dto';
-import { UpdateFieldDto } from './dto/update-field.dto';
+import { Field } from './entities/field.entity';
+import { FieldsService } from './fields.service';
+
 
 @Controller('fields')
 export class FieldsController {
   constructor(private readonly fieldsService: FieldsService) {}
 
   @Post()
-  create(@Body() createFieldDto: CreateFieldDto) {
-    return this.fieldsService.create(createFieldDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.fieldsService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.fieldsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFieldDto: UpdateFieldDto) {
-    return this.fieldsService.update(+id, updateFieldDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.fieldsService.remove(+id);
+  async create(@Body() createFieldDto: CreateFieldDto): Promise<Field> {
+    try {
+      const createdField = await this.fieldsService.createField(createFieldDto);
+      return createdField;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new HttpException('Field not found', HttpStatus.NOT_FOUND);
+      } else if (error instanceof InternalServerErrorException) {
+        throw new HttpException(
+          'Internal Server Error',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      } else {
+        console.error('An error occurred:', error);
+        throw new HttpException(
+          'An error occurred while processing your request',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
   }
 }

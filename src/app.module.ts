@@ -9,6 +9,7 @@ import { FieldsModule } from './fields/fields.module';
 import { Fruit } from './fruits/entities/fruit.entity';
 import { FruitsModule } from './fruits/fruits.module';
 import { Variety } from './fruits/varieties/entities/variety.entity';
+import { CsvModule } from './csv/csv.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { Variety } from './fruits/varieties/entities/variety.entity';
       synchronize: true,
     }),
     TypeOrmModule.forFeature([Fruit, Variety]),
+    CsvModule,
   ],
   controllers: [AppController],
   providers: [AppService],

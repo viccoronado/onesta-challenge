@@ -11,4 +11,4 @@ export class CreateFarmerDto {
   fieldIds: number[]; 
 
   @IsArray()
-  clientIds: number[]; 
+  clientIds: number[];
