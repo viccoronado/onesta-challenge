@@ -19,6 +19,9 @@ export class Field {
   @Column()
   size: number;
 
+  @Column()
+  location: string;
+
   @ManyToOne(() => Farmer, (farmer) => farmer.fields)
   farmer: Farmer;
 }

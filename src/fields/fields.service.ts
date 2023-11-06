@@ -1,11 +1,7 @@
-import {
-  Injectable,
-  NotFoundException,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Farmer } from 'src/farmers/entities/farmer.entity';
 import { Repository } from 'typeorm';
+import { Farmer } from 'src/farmers/entities/farmer.entity';
 import { Field } from './entities/field.entity';
 
 @Injectable()
@@ -25,17 +21,30 @@ export class FieldsService {
       const savedField = await this.saveField(field);
       return savedField;
     } catch (error) {
-      console.error('An error occurred:', error);
-      throw new InternalServerErrorException(
-        'An error occurred while processing your request',
-      );
+      this.handleServiceError(error);
     }
   }
-  createFieldEntity(name: string, location: string, farmer: Farmer) {
+
+  private createFieldEntity(
+    name: string,
+    location: string,
+    farmer: Farmer,
+  ): Field {
     return this.fieldRepository.create({ name, location, farmer });
   }
 
   private async saveField(field: Field): Promise<Field> {
-    return this.fieldRepository.save(field);
+    try {
+      return await this.fieldRepository.save(field);
+    } catch (error) {
+      this.handleServiceError(error);
+    }
+  }
+
+  private handleServiceError(error: Error) {
+    console.error('An error occurred:', error);
+    throw new InternalServerErrorException(
+      'An error occurred while processing your request',
+    );
   }
 }

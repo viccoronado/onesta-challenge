@@ -48,6 +48,7 @@ export class CsvImportService {
           const clientDto: CreateClientDto = {
             name: row.customerName,
             email: row.customerEmail,
+            farmers: [],
           };
 
           const fieldDto: CreateFieldDto = {

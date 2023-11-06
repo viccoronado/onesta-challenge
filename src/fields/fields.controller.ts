@@ -2,15 +2,12 @@ import {
   Controller,
   Post,
   Body,
-  HttpException,
   HttpStatus,
-  InternalServerErrorException,
-  NotFoundException,
+  HttpException,
 } from '@nestjs/common';
+import { FieldsService } from './fields.service';
 import { CreateFieldDto } from './dto/create-field.dto';
 import { Field } from './entities/field.entity';
-import { FieldsService } from './fields.service';
-
 
 @Controller('fields')
 export class FieldsController {
@@ -22,20 +19,19 @@ export class FieldsController {
       const createdField = await this.fieldsService.createField(createFieldDto);
       return createdField;
     } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw new HttpException('Field not found', HttpStatus.NOT_FOUND);
-      } else if (error instanceof InternalServerErrorException) {
-        throw new HttpException(
-          'Internal Server Error',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      } else {
-        console.error('An error occurred:', error);
-        throw new HttpException(
-          'An error occurred while processing your request',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
+      this.handleControllerError(error);
     }
+  }
+
+  private handleControllerError(error: Error) {
+    if (error instanceof HttpException) {
+      throw error;
+    }
+
+    console.error('An error occurred:', error);
+    throw new HttpException(
+      'An error occurred while processing your request',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
   }
 }
