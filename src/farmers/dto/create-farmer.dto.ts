@@ -4,11 +4,15 @@ export class CreateFarmerDto {
   @IsString()
   name: string;
 
+  @IsString()
+  email: string;
+
   @IsInt()
   age: number;
 
   @IsArray()
-  fieldIds: number[]; 
+  fieldIds: number[];
 
   @IsArray()
   clientIds: number[];
+}
