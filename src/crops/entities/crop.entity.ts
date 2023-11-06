@@ -10,7 +10,7 @@ export class Crop {
   @Column()
   name: string;
 
-  @ManyToMany(() => Variety, (variety) => variety.fruits)
+  @ManyToMany(() => Variety, (variety) => variety.fruit)
   varieties: Variety[];
 
   @ManyToMany(() => Crop, (fruit) => fruit.fruits)
