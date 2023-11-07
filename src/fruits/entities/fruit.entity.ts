@@ -11,7 +11,7 @@ import { Variety } from '../varieties/entities/variety.entity';
 @Unique(['name'])
 export class Fruit {
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
   @Column()
   name: string;

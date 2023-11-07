@@ -31,4 +31,12 @@ export class FruitsService {
       }
     }
   }
+
+  async findFruitById(id: number): Promise<Fruit> {
+    const fruit = await this.fruitRepository.findOne({ where: { id } });
+    if (!fruit) {
+      throw new NotFoundException('Fruit not found');
+    }
+    return fruit;
+  }
 }

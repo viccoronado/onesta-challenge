@@ -4,8 +4,8 @@ import { FruitsController } from './fruits.controller';
 import { VarietiesModule } from './varieties/varieties.module';
 
 @Module({
+  imports: [VarietiesModule],
   controllers: [FruitsController],
   providers: [FruitsService],
-  imports: [VarietiesModule],
 })
 export class FruitsModule {}

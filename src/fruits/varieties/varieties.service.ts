@@ -6,22 +6,21 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Fruit } from '../entities/fruit.entity';
-import { CreateVarietyDto } from './dto/create-variety.dto';
 import { Variety } from './entities/variety.entity';
 
 @Injectable()
 export class VarietiesService {
   constructor(
-    @InjectRepository(Fruit)
-    private readonly fruitRepository: Repository<Fruit>,
     @InjectRepository(Variety)
     private readonly varietyRepository: Repository<Variety>,
+    @InjectRepository(Fruit)
+    private readonly fruitRepository: Repository<Fruit>,
   ) {}
 
-  async createVariety(createVarietyDto: CreateVarietyDto): Promise<Variety> {
+  async createVariety(name: string, fruit: Fruit): Promise<Variety> {
     try {
-      const fruit = await this.findFruitById(createVarietyDto.id);
-      const variety = this.createVarietyInstance(createVarietyDto, fruit);
+      const variety = this.varietyRepository.create({ name, fruit });
+      fruit.varieties.push(variety);
       await this.saveVarietyAndFruit(variety, fruit);
       return variety;
     } catch (error) {
@@ -34,23 +33,6 @@ export class VarietiesService {
         );
       }
     }
-  }
-
-  async findFruitById(id: number): Promise<Fruit> {
-    const fruit = await this.fruitRepository.findOne({ where: { id } });
-    if (!fruit) {
-      throw new NotFoundException('Fruit not found');
-    }
-    return fruit;
-  }
-
-  private createVarietyInstance(
-    createVarietyDto: CreateVarietyDto,
-    fruit: Fruit,
-  ): Variety {
-    const variety = this.varietyRepository.create(createVarietyDto);
-    fruit.varieties.push(variety);
-    return variety;
   }
 
   private async saveVarietyAndFruit(

@@ -64,7 +64,7 @@ export class CsvImportService {
             variety: new Variety(),
           };
 
-          const varietyDto: CreateVarietyDto = {
+          const varietyDto: any = {
             name: row.varietyName,
             id: 0,
             fruit: new Fruit(),
